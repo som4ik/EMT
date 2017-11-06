@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
-  match "/", to: 'urls_shorter#call', via: [:post]
-  match "/", to: "urls_shorter#find", via: [:get]
+  match "/", to: 'urls_shortner#call', via: [:post]
+  match "/", to: "urls_shortner#find", via: [:get]
+
+  DynamiceRoutes.load
 end
