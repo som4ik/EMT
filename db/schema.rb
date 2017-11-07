@@ -12,10 +12,7 @@
 
 ActiveRecord::Schema.define(version: 20171106144725) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
-  create_table "urls_holders", force: :cascade do |t|
+  create_table "urls_holders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "long_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

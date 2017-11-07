@@ -1,20 +1,28 @@
-class UrlsShortner
-  attr_accessor :url
+module UrlsShortner
 
-  def self.call(url)
-    self.new(url).start
-  end
+  #
+  # define the object/ prepare data (generate short_url)
+  #
+  # @param  klass: UrlsHolder
+  #
+  # @return [Object] object of UrlsHolder class
+  #
+  def self.generate(url, klass: UrlsHolder)
 
-  def initialize(url)
-    @url = url
-  end
+    url_holder = klass.find_or_initialize_by(long_url: url)
+    url_holder.short_url = set_short_url
 
-  def start(klass: UrlsHolder, dynamic_routes: DynamiceRoutes)
-
-    url_holder = klass.new(long_url: url)
-    url_holder.save
-
-    dynamic_routes.reload
     url_holder
+  end
+
+
+  # define the short url before create and regenerated while its in db
+  #
+  def self.set_short_url(hex_generator: SecureRandom)
+    short_url = hex_generator.hex(5)
+    while !UrlsHolder.where(short_url: short_url).count.zero?
+      short_url = hex_generator.hex(5)
+    end
+    short_url
   end
 end
