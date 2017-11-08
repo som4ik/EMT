@@ -1,15 +1,16 @@
 class UrlsShortnerController < ApplicationController
-  before_action :validate_params, only: [:call]
+  before_action :validate_params, only: [:create]
 
   #
   # post start the process
   #
   # @return [Json] ex: {url: "whatever23121"}, code: 200
   #
-  def call
-    url = UrlsShortner.call(url_params["longUrl"])
-    if url
-      render json: { url: "#{request.protocol}#{request.host}:#{request.port}/#{url.short_url}" }
+  def create
+    url = UrlsShortner.generate url_params["longUrl"]
+
+    if url.save
+      render json: { url: "#{request.protocol}#{request.host_with_port}/#{url.short_url}" }
     else
       render json: "NOK"
     end
@@ -20,13 +21,9 @@ class UrlsShortnerController < ApplicationController
   #
   # @return [Json] ex: {longUrl: "https://www.whatever.com"}
   #
-  def find
-    url = UrlsHolder.find(params[:url_id])
-    if url
-      render json: {location: url.long_url }
-    else
-      render json: "NOK", code: 404
-    end
+  def show
+    url = UrlsHolder.find_by(short_url: params[:short_url])
+    redirect_to url.long_url
   end
 
   private
